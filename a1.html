@@ -4,15 +4,91 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Richard Zhang's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
-    <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 1!</p>
+    <h1>Full Operation Video!</h1>
+    <div class="container">
+      <video src="PXL_20251006_083034572.mp4" controls width = "720" height = "480"></video>
+      <p>Here are the graphs representing this circuit</p>
+      <img src="diagram.png" alt="circuit diagram" width = "720" height = "480"/>
+      <p> This represents my circuit </p>
+      <img src="schematic.png" alt="circuit schematic" width = "720" height = "480"/>
+      <p> This represents my circuit schematic </p>
+      <pre><code>
+        // Time in miliseconds (1000 ms = 1 seconds)
+        int TIMEOUT = 1000; 
+
+        // the setup function runs once when you press reset or power the board
+        void setup() {
+          // initialize all three used pins as output
+
+          // We are using Pins 13, 12, and 11, so we need to initialize all of them 
+          for (int i = 13 ; i > 10 ; i--) {
+            pinMode(i, OUTPUT);
+
+          }
+        }
+
+        // the loop function runs over and over again forever
+        void loop() {
+
+          // The logic is relatively simple, in two parts, we want the LED start from 13 (Red)
+          // Make their way to green, then yellow, then back to green, then back to Red again 
+          // To complete one of the cycle
+
+          // First part, goes from Red -> Green -> Yellow
+
+          // Red blink, then Green Blink, Then Yellow (We Turn Yellow On)
+          for (int i = 13 ; i > 10 ; i--) { // Start from Pin 13 and goes to Pin 11
+            if (i > 11) { // Red and Green 
+              digitalWrite(i, HIGH);
+              delay(TIMEOUT - 250 );
+              digitalWrite(i, LOW);
+              delay(TIMEOUT - 750);
+            } else { // Yellow 
+              digitalWrite(i, HIGH);
+              delay(TIMEOUT - 250);
+            }
+          }
+
+          // We move to this part of the loop after 250ms and reverse the direction, this time 
+          // going back up instead. 
+          for (int i = 11 ; i < 14 ; i++) {
+            if (i > 11) { // Red and Green 
+              digitalWrite(i, HIGH);
+              delay(TIMEOUT - 250 );
+              digitalWrite(i, LOW);
+              delay(TIMEOUT - 750);
+            } else { // Yellow
+              digitalWrite(i, LOW);
+              delay(TIMEOUT - 750);
+            }
+          }
+        }
+      </code></pre>
+      <p> Here is the code for this project with commenting! </p>
+      <p> Here are some additional Questions: 
+        <ul>
+          <li>How many LEDs could you blink independently with your Arduino? 
+            <br/>
+            I could get all three to blink independently, as they each had their very own 
+            individual input pins. 
+          </li>
+          <li>How fast do you need to blink your LEDs to no longer tell? 
+            <br/>
+            I would say probably like under 50 or 25 miliseconds, the eye simply 
+            cannot discern most differences at that speed or interval. 
+          </li>
+          <li>Do you use AI tools to help you with this assignment?
+            <br/>
+            Oh, I absolutely did, but what I did was simply searching up the right 
+            HTML tags and their syntax just to make sure what I had was correct. 
+          </li>
+        </ul>
+      </p>
     </div>
   </body>
 </html>
