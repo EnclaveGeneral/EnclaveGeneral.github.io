@@ -4,15 +4,110 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Richard Zhang's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 2!</h1>
-    <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 2!</p>
+    <h1>A2 Project Video!</h1>
+    <div class="container">
+      <video src="a2_video.mp4" controls width = "720" height = "480"></video>
+      <p>Here are the graphs representing this circuit</p>
+      <img src="assets/a2/circuit_diagram.png" alt="circuit diagram" width = "720" height = "480"/>
+      <p> This represents my circuit </p>
+      <img src="schematic_fade.png" alt="circuit schematic" width = "720" height = "480"/>
+      <p> This represents my circuit schematic </p>
+      <img src="assets/a2/voltage_graph.png" alt="voltage graph" width = "720" height = "480"/>
+      <p> This represents the voltage graph of the circuit over time for the LEDs </p>
+      <pre><code>
+        // constants won't change. They're used here to set pin numbers:
+        const int buttonPin = 2;  // Pin that regulates button input and on change 
+
+        // variables will change:
+        int buttonState = 0;  // variable for reading the pushbutton status
+        // 0 is the LOW input state, while 1 is the HIGH input state. 
+
+        void setup() {
+          // initialize the three LEDs pins as outputs:
+          // We use pints that are PWM so only 11, 10, and 9
+          for (int i = 11 ; i > 8 ; i--) {
+            pinMode(i, OUTPUT);
+          }
+          
+          // initialize the button regulator pin as outputs
+          pinMode(buttonPin, INPUT);
+        }
+
+        void loop() {
+
+          // read the state of the pushbutton value:
+          buttonState = digitalRead(buttonPin);
+
+          // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+          // And the FADE sequence is activated and then displayed. 
+          if (buttonState == HIGH) {
+
+            // We start from PIN Port 11 and go down to 9. Covering all three different colors 
+            for (int i = 11 ; i > 8 ; i--) {
+
+              // We start from 0 and go through 255, covering all 8 bits analog write bit possible values and adjust our LED brightness. 
+              // Start from dim to bright. 
+              for (int j = 0 ; j < 256 ; j++) {
+                analogWrite(i, j); // AnalogWrite set the color to the current analog value. 
+                delay(2); // With each change we delay by 2 ms so that human eye can perceive a change in state. 
+              }
+
+              
+              // Same thing but we start from the brightest and go to the dimmest. 
+              for (int j = 255 ; j >= 0 ; j--) {
+                analogWrite(i, j);
+                delay(2); // Similar pattern as above. 
+              }
+            }
+
+          } else {
+            // turn LED off if the button is not pressed and ensure nothing is run. 
+            for (int i = 11 ; i > 8 ; i--) {
+              digitalWrite(i, LOW);
+            }
+          }
+
+        }
+      </code></pre>
+      <p> Here is the code for this project with commenting! </p>
+      <p> Here are some additional Questions: 
+        <ul>
+          <li>Resistor Calculation? 
+            <br/>
+            I have the knowledge that each LED in order to achieve maximum brightness, we need to have 
+            a different resistor for each color input for the RGB LED, however, to provide uniformity 
+            to the current for each color inflow, I have decided to use a 220 Ohm resistor for each RGB LED. 
+            This resulted in the uniform current inflow of about 22.7 mA current for each LED. 
+          </li>
+          <li>What resistor did you use for the button? 
+            <br/>
+            I chose to use a 10k Ohm resistor, because it is large enough to ensure that the circuit can reliably 
+            read a UP and down signal, ensuring that when button is pressed, the pcb detects a HIGH signal and when it is not 
+            pressed, it detects a LOW signal.
+          </li>
+          <li>How long would by circuit last with a 1200 mAh battery?
+            <br/>
+            Since I used a uniform 220 Ohm resistor for each LED, and each input pin is a 5V source, each LED draws about 22.7 mA of current.
+            Since there are 3 LEDs, the total current draw is about 68.1 mA. 
+            Therefore, with a 1200 mAh battery, the circuit would last about 17.6 hours. Of course, if I were to use a different 
+            resistor for each LED, the current draw would be different, and therefore the battery life would be different as well.
+          </li>
+          <li>Actual voltage vs theoretical voltage?
+            <br/>
+            I measured 5.04 for the red LED input, 4.97 for the blue LED, and 4.96 for the Green LED. Probably due to internal resistance or some 
+            other factors? Either way, i expected them to be all at 5V, with a bit of variance.
+          <li>
+            Did you use AI tools?
+            <br/>
+            I used ChatGPT to help me with the generate the voltage versus time graph because i was too tired to draw the graph myself by hand at this point. 
+          </li>
+        </ul>
+      </p>
     </div>
   </body>
 </html>
