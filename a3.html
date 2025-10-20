@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Richard Zhang's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>A3 Project Video!</h1>
+    <div class="container">
+      <video src="A3/PXL_20251020_030037897.mp4" controls width = "720" height = "480"></video>
+      <p>Here are the graphs representing this circuit</p>
+      <img src="A3/circuit.png" alt="circuit diagram" width = "720" height = "480"/>
+      <p> This represents my circuit </p>
+      <img src="A3/schematic.png" alt="circuit schematic" width = "720" height = "480"/>
+      <p> This represents my circuit schematic </p>
+      <img src="A3/graph.png" alt="voltage graph" width = "720" height = "480"/>
+      <p> This represents the voltage graph of the circuit over time for voltage divider  </p>
+      <pre><code>
+        // Joy stick analog control of the RGB LED
+        // Use analogRead(), map(), analogWrite() and if() statements as per requirements
+
+        const int VRx = A1; // Pin output for A1
+        const int VRy = A0;
+
+        // Output port numbers
+        const int ledRed = 10;
+        const int ledGreen = 9;
+        const int ledBlue = 11;
+
+        int xValue = 0;
+        int yValue = 0;
+
+        void setup() {
+          // Establish communication between the board and the recepting device
+          Serial.begin(9600);
+
+          // Initialize all the output ports
+          pinMode(ledRed, OUTPUT);
+          pinMode(ledGreen, OUTPUT);
+          pinMode(ledBlue, OUTPUT);
+
+
+        }
+
+        void loop() {
+          xValue = analogRead(VRx); // One of the input value from joystick
+          yValue = analogRead(VRy); // The other one
+
+          // Map 0–1023 to 0–255
+          int mappedX = map(xValue, 0, 1023, 0, 255);
+          int mappedY = map(yValue, 0, 1023, 0, 255);
+
+          // --- X-axis controls GREEN ---
+          if (xValue > 600) {  // push right
+            analogWrite(ledGreen, mappedX);
+          } else if (xValue < 400) {  // push left
+            analogWrite(ledGreen, mappedX);
+          } else {  // center zone
+            analogWrite(ledGreen, 0);  // turn off green
+          }
+
+          // --- Y-axis controls BLUE ---
+          if (yValue > 600) {  // push up
+            analogWrite(ledBlue, mappedY);
+          } else if (yValue < 400) {  // push down
+            analogWrite(ledBlue, mappedY);
+          } else {  // center zone
+            analogWrite(ledBlue, 0);  // turn off blue
+          }
+
+          // --- Red LED stays fixed at mid brightness ---
+          analogWrite(ledRed, 128);
+
+          // Slight delay for the light to recalibrate.
+          delay(20);
+        }
+
+      </code></pre>
+      <p> Here is the code for this project with commenting! </p>
+      <p> Here are some additional Questions:
+        <ul>
+          <li>So, how is the voltage read at Voltage divider?
+            <br/>
+            The jockey stick is made up of two, very much independent analog voltage divider, each has a 5V input voltage,
+            this means that it can fluctuates between 5V and 0 through out the circuit. At the voltage divider, we might
+            read any value between 5 and 0V. The resistor inside the voltage divider would be a 10k Ohm resistor as it is able to keep current low throughout.
+          </li>
+          <li>Does it matter if the variable resistor is R1 or R2?
+            <br/>
+            No, it does not matter, it can either R1 or R2, because the V out = R2 / (R1 + R2) * V in, and either resitor can be R1 or R2, the other just has to be the other in this equation.
+            For instance, if R1 = 5 and R2 = 0, the voltage out would be 5 x 0 = 0V, and conversely, if R1 = 0 and R2 = 5, then the votlage out would be 5 x 1 = 5. It literally works the same
+            if the answer is reversed, just the naming and terminology.
+          </li>
+          <li>What if we had a 10 bit PWM and a 16 bits Analog Converter?
+            <br/>
+            Well, in that case, the syntax for map would be a bit different, the syntax would be map(analogVal, 0, 65535, 0, 1023); Here, because our analog converter is 16 bits and operate between a
+            range of 0 to 65535, that is where our value will be coming from, and we extrapolate that onto the 10 bit PWM range which is between 0 and 1023, basically a mathematic change.
+          </li>
+        </ul>
+      </p>
+    </div>
+  </body>
+</html>
