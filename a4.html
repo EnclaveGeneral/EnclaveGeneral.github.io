@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Richard Zhang's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>A3 Project Video!</h1>
+    <div class="container">
+      <video src="A4/PXL_20251026_072413969.mp4" controls width = "720" height = "480"></video>
+      <p>Here are the graphs representing this circuit</p>
+      <img src="A4/Graph.png" alt="circuit diagram" width = "720" height = "480"/>
+      <p> This represents my circuit </p>
+      <img src="A4/Schematic.png" alt="circuit schematic" width = "720" height = "480"/>
+      <p> This represents my circuit schematic </p>
+      <img src="A4/Q1.png" alt="voltage graph" width = "720" height = "480"/>
+      <p> This represents the voltage graph of the circuit over time for voltage divider  </p>
+      <pre><code>
+        include <Servo.h> // Library Moduels
+
+        Servo myservo; // Create an instance of the class
+
+        int analogX = A0; // Initialize Analog Variable
+        int sensorInput = 7; // Initialize Motion Sensor Input Variable
+        int pirState = LOW; // Initialize Motion Sensor State Variable
+        int valX; // Initialize Servo State Varaible
+        int pirVal; // Initialize Motion Sensor Varaible
+        int ledOutput = 12; // Initialize LED Output Channel
+
+        void setup() {
+          pinMode(sensorInput, INPUT); // Init
+          pinMode(ledOutput, OUTPUT); // Init
+          myservo.attach(9); // Attach the listening port to servo object
+          Serial.begin(9600); // Begin recording for listening messages.
+          Serial.println("Trial Begins!"); // Trial println statement
+        }
+
+        void loop() {
+          pirVal = digitalRead(sensorInput);
+
+          if (pirVal == HIGH) { // If the current motion detected
+            digitalWrite(ledOutput, HIGH);
+            delay(500); // Light up the LED
+
+            if (pirState == LOW) { // If the current state is different from detection
+              Serial.println(" Motion Detected! "); // Update
+              pirState = HIGH;
+            }
+          }
+          else {
+            digitalWrite(ledOutput, LOW); // If the current motion detected is LOW or NO
+            delay(500); // Turn off the LED
+
+            if (pirState == HIGH) { // Re adjust the value of current motion state if they do not match
+              Serial.println(" Motion Ceased! ");
+              pirState = LOW; // Print in serial to better track them
+            }
+          }
+
+          valX = analogRead(analogX); // Map the analog input range of joystick to the range of servo motors
+          valX = map(valX, 0, 1023, 0, 180); // Mapping
+          myservo.write(valX); // Activate the servo motor.
+
+          delay(15);
+        }
+      </code></pre>
+      <p> Here is the code for this project with commenting! </p>
+      <p> Here are some additional Questions:
+        <ul>
+          <li>Question #1
+            <br/>
+            See the chart I provided above.
+          </li>
+          <li>How do we handle Erroneous Readings?
+            <br/>
+            Well, in that case, we can have something that takes multiple readings and take an average out of all the readings which would give us the average estimate of the readings.
+            It would be much more accurate in that scenario.
+            The pseudocode would probably look like something like this:
+            <pre><code>
+              int readReliableSensor() {
+                int readings[5];
+                for (int i = 0; i < 5; i++) {
+                  readings[i] = analogRead(A0);
+                }
+                // Sort readings
+                sort(readings, 5);
+                // Take median (robust against outliers)
+                return readings[2];
+              }
+            </code></pre>
+          </li>
+          <li>What if your device is slightly noisy?
+            <br/>
+            Again, in that case, we need to use some smoothing ot filtering, which, underneath its hood, is basically the same thing as what I did above except they take multiple measurement
+            and smooth it out against the curve. I learned this from consulting online sources and AI but it seems really intuitive and easy to understand once you understand the why reasoning
+            behind it.
+            <pre><code>
+              float alpha = 0.1; // smoothing factor (0–1)
+              float smoothedValue = 0;
+
+              void loop() {
+                int raw = analogRead(A0);
+                smoothedValue = alpha * raw + (1 - alpha) * smoothedValue;
+                // use smoothedValue for control
+              }
+            </code></pre>
+          </li>
+          <li>
+            <br/>
+            I used some AI tools like ChatGPT to explain some concepts, as well as some of the pseudocode generation because i have a hard time knowing how do you handle the noise just by myself
+            at this point, but it was an eye opening experience for sure and I loved every single second of it.
+          </li>
+        </ul>
+      </p>
+    </div>
+  </body>
+</html>
