@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Richard Zhang's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>A3 Project Video!</h1>
+    <div class="container">
+      <video src="A6/PXL_20251117_013333029.mp4" controls width = "720" height = "480"></video>
+      <p> This represents my circuit demo </p>
+      <img src="A6/shematic.png" alt="circuit schematic" width = "720" height = "480"/>
+      <p> This represents my circuit schematic  </p>
+      <img src="A6/PXL_20251117_050953062.jpg" alt="circuit graph" width = "720" height = "480"/>
+      <p> This represents the picture of the complete circuit setup</p>
+      <pre><code>
+
+      </code></pre>
+      <p> Here is the code for this project with commenting! </p>
+      <pre><code>
+        let serial;
+        let isOn = false;
+        let btn;
+
+        // Set up function use standard boiler plate to set up the web interface and call the relevant functions to establish
+        // connections!
+        function setup() {
+          createCanvas(300, 150);
+
+          let saved = localStorage.getItem("motorState");
+          if (saved !== null) isOn = saved === "true";
+
+          btn = createButton(isOn ? "Turn OFF" : "Turn ON");
+          btn.position(20, 20);
+          btn.style("padding", "12px 20px");
+          btn.mousePressed(toggleMotor);
+
+          // Use serial tunnel for communication with Arduino
+          serial = createSerial();
+
+          // Button boilerplate
+          let connectBtn = createButton("Connect Arduino");
+          connectBtn.position(20, 70);
+          connectBtn.mousePressed(connectToArduino);
+        }
+
+        // Open the ports
+        function connectToArduino() {
+          // p5.webserial uses open() to both request port AND open it
+          serial.open(9600);  // This will prompt the user to select a port // This bug caused me like 5 hours of stress lol
+          console.log("Opening connection...");
+        }
+
+        // Switch between ON and OFF function with our input button, dictates whether the motor spins or not.
+        function toggleMotor() {
+          isOn = !isOn;
+          btn.html(isOn ? "Turn OFF" : "Turn ON");
+          localStorage.setItem("motorState", isOn);
+          sendState();
+        }
+
+        // Send the current state (ON or OFF) to the arduino board, check for errors before proceed.
+        function sendState() {
+          if (!serial.opened()) {
+            console.log("Not connected yet");
+            return;
+          }
+          let value = isOn ? "1" : "0";
+          serial.write(value);
+          console.log("Sent:", value);
+        }
+
+        // Display our syntax
+        function draw() {
+          background(255);
+
+          if (serial.available()) {
+            let incoming = serial.readLine();
+            if (incoming) console.log("Arduino:", incoming.trim());
+          }
+
+          textSize(18);
+          fill(0);
+          text("Motor is: " + (isOn ? "ON" : "OFF"), 20, 120);
+
+          textSize(12);
+          text("Status: " + (serial.opened() ? "Connected" : "Not connected"), 20, 140);
+        }
+
+        &lt;!-- Base Template Setup --&gt;
+
+        &lt;!DOCTYPE html&gt;
+        &lt;html lang="en"&gt;
+          &lt;head&gt;
+            &lt;meta charset="UTF-8" /&gt;
+            &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+            &lt;title&gt;Motor Control&lt;/title&gt;
+
+            &lt;!-- p5 core --&gt;
+            &lt;script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"&gt;&lt;/script&gt;
+
+            &lt;!-- p5.webserial --&gt;
+            &lt;script src="https://cdn.jsdelivr.net/gh/gohai/p5.webserial@master/libraries/p5.webserial.js"&gt;&lt;/script&gt;
+
+            &lt;style&gt;
+              html, body {
+                margin: 0;
+                padding: 0;
+                background: #f0f0f0;
+                font-family: sans-serif;
+              }
+            &lt;/style&gt;
+          &lt;/head&gt;
+
+          &lt;body&gt;
+            &lt;script src="index.js"&gt;&lt;/script&gt;
+          &lt;/body&gt;
+        &lt;/html&gt;
+
+        const int motorPin = 10;
+
+        void setup() {
+          Serial.begin(9600);
+          pinMode(motorPin, OUTPUT);
+        }
+
+        void loop() {
+          if (Serial.available()) {
+            char c = Serial.read();
+
+            if (c == '1') {
+              digitalWrite(motorPin, HIGH);   // ON
+            }
+            if (c == '0') {
+              digitalWrite(motorPin, LOW);    // OFF
+            }
+          }
+        }
+
+      </code></pre>
+      <p> Here are some additional Questions:
+          <li> Did you Use AI?
+            <br/>
+              I used AI to help me with the pseudocode and some document analyzing
+          </li>
+      </p>
+    </div>
+  </body>
+</html>
